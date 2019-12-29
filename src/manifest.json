@@ -21,8 +21,15 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-	"web_accessible_resources": [
-		"src/houndini.js"
+	"content_scripts": [
+    {"js": ["js/main.js"], "matches": ["<all_urls>"]},
+    {"js": ["js/sub.js", "js/houndini_lib.js"], "matches": ["<all_urls>"], "all_frames":true}
 	],
-	"manifest_version": 2
+	"web_accessible_resources": [
+		"js/houndini_lib.js",
+		"js/houndini.js",
+		"js/iframe.js",
+		"js/main.js",
+		"js/sub.js"
+	]
 }
