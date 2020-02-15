@@ -12,7 +12,6 @@ var houndini = {};
 (function(api) {
   'use strict';
 
-
   // constants
   const MAX_PLAYBACK_RATE = 16.0;
 
@@ -103,7 +102,7 @@ var houndini = {};
         // setInterval(function(){
         //   v.playbackRate = MAX_PLAYBACK_RATE;
         // }, 1);
-        v.playbackRate = MAX_PLAYBACK_RATE;
+        video.playbackRate = MAX_PLAYBACK_RATE;
       } else if (location.hostname.match(/cc\.com/)) {
         video = document.querySelector('.edge-player-ads-element');
         video.currentTime = video.duration;
@@ -142,6 +141,7 @@ var houndini = {};
   api.init = function() {
     registerPlaying(); //maybe move this somewhere else.
     let videoSkipSuccess = performSkipVideo();
+    return videoSkipSuccess;
   }
 
 })(houndini);

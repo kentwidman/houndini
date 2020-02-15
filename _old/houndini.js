@@ -143,46 +143,14 @@
    * Injects houndi video code into iframe.
    *
    */
-  function injectIframe() {
-    var iframes = findIframe();
-
-    iframes.forEach (function (iframe) {
-      let iframeDocument = null;
-
-      // Very Experimental
-      try {
-        // only works if same orgin policy match.
-        iframeDocument = iframe.contentWindow.document;
-      } catch(e){
-        let url = iframe.src;
-        iframeDocument = openInNewTab(url)
-      }
-
-      //  Experimental code injection
-      var s = iframeDocument.createElement("script");
-      s.type = "text/javascript";
-      s.text = '' +
-
-        registerPlaying.toString() + "\n" +
-        findPlayingVideo.toString() + "\n" +
-        performSkipVideo.toString() + "\n" +
-        'registerPlaying(); ' +
-        'performSkipVideo(); ';
-
-      iframeDocument.body.appendChild(s);
-    });
-  }
-
   function init() {
-    debugger;
+    // debugger;
 
     registerPlaying();
 
     let videoSkipSuccess = performSkipVideo();
-    if (!videoSkipSuccess) {
-      injectIframe();
-    }
+    return videoSkipSuccess;
   }
 
-  init();
+  //init();
 })();
