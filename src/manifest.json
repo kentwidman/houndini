@@ -2,8 +2,8 @@
 	"manifest_version": 2,
 	"name": "Houndini",
 	"description": "Houndidi, now you see it now you don't. Your friendly video skipper.",
-	"version": "1.4",
-  "description": "This extension allows you to skip videos which you normally can't skip. Works on most video streaming platforms.",
+	"version": "2.0",
+  "description": "This extension allows to skip videos on the web.",
   "icons": {
 		"16": "icon16.png",
 		"32": "icon32.png",

@@ -1,3 +1,8 @@
+# 2.0
+-----
+Split the code into main and sub(iframe) files that comunicate with the background file,
+when to execute the houndi libary. This release support iframes of any domain.
+
 # 1.3
 -----
 Added iframe support with script injection.
