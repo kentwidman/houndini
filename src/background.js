@@ -1,58 +1,51 @@
-/*
-The background process runs on every frame, whether it's the main document or a
-document within an iframe.
-*/
+// Copyright 2022 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-/*
-  Setup a lister to listen for a message that has the propertiery sendBack
-  Listen between frame so we can comunicate.
-*/
-var mainports = {},
-    ports = {},
-    ids = 0;
-
-chrome.extension.onConnect.addListener(function(port) {
-  console.log("Connected .....");
-
-  // for the main.js port.
-  if (port.name === 'main'){
-    port.index = ids++;
-    mainports[port.index] = port;
-
-    mainports[port.index].onMessage.addListener(function(msg) {
-      if (!msg.success) {
-        var portsToDelete = [];
-        for(const currentPortId in ports) {
-          ports[currentPortId].postMessage(`Fire Houndini ${currentPortId}`);
-        }
-      }
-    });
-  } else if (port.name === 'iframe') {
-    port.index = ids++;
-    ports[port.index] = port;
-  } else {
-    console.error('invalid port');
-  }
-
-
-  port.onDisconnect.addListener((p) => {
-    if (p.name === 'main'){
-      delete mainports[p.index];
-    } else {
-      delete ports[p.index];
-    }
-  });
+chrome.runtime.onInstalled.addListener(() => {
+  // chrome.action.setBadgeText({
+  //   text: 'OFF'
+  // });
 });
 
+//const youtube = 'https://www.youtube.com/watch';
 
-chrome.browserAction.onClicked.addListener(function (tab) {
-  for(const currentPortId in mainports) {
-    mainports[currentPortId].postMessage(`Fire Houndini ${currentPortId}`);
-  }
+// When the user clicks on the extension action
+chrome.action.onClicked.addListener(async (tab) => {
+  // if (tab.url.startsWith(youtube)) {
+  //   // We retrieve the action badge to check if the extension is 'ON' or 'OFF'
+  //   const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
+  //   // Next state will always be the opposite
+  //   const nextState = prevState === 'ON' ? 'OFF' : 'ON';
+
+  //   // Set the action badge to the next state
+  //   await chrome.action.setBadgeText({
+  //     tabId: tab.id,
+  //     text: nextState
+  //   });
+
+  //   if (nextState === 'ON') {
+      // Insert the CSS file when the user turns the extension on
+      await chrome.scripting.executeScript({
+        files: ['script.js'],
+        target: { tabId: tab.id, allFrames : true}
+      });
+    // } else if (nextState === 'OFF') {
+    //   // Remove the CSS file when the user turns the extension off
+    //   // await chrome.scripting.removeCSS({
+    //   //   files: ['focus-mode.css'],
+    //   //   target: { tabId: tab.id }
+    //   // });
+    // }
+  // }
 });
-
-/*
-chrome.runtime API to retrieve the background page
-Fired when a message is sent from either an extension process (by runtime.sendMessage)
-or a content script (by tabs.sendMessage).
-*/

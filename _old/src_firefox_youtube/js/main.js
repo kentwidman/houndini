@@ -2,9 +2,9 @@ console.log('main.js is loaded!');
 
 var isTop = true;
 
-console.log('in iframe!');
+console.log('in main!');
 
-port = chrome.extension.connect({
+port = browser.runtime.connect({
   name: "main"
 });
 

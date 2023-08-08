@@ -1,7 +1,7 @@
 var port;
 
 console.log('sub.js is loaded!')
-if (!window.isTop) { // true  or  undefined
+if (!window.isMainFrame) {
   console.log('in iframe!');
 
   port = chrome.extension.connect({
