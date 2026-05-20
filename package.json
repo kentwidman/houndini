@@ -1,6 +1,6 @@
 {
   "name": "houndini",
-  "version": "3.0.0",
+  "version": "3.1",
   "description": "Chrome extension that skips looping video backgrounds",
   "private": true,
   "scripts": {
