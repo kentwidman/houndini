@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Houndini",
   "description": "Skips the current playing video, via mouse click or keyboard shortcut, Ctrl+B or Command+B. Houndidi, now you see it now you don't.",
-  "version": "2.0",
+  "version": "2.2",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
@@ -21,6 +21,13 @@
     }
   },
   "permissions": ["scripting", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["autoskip-shared.js", "autoskip-button.js", "autoskip-video.js"],
+      "run_at": "document_idle"
+    }
+  ],
   "commands": {
     "_execute_action": {
       "suggested_key": {
