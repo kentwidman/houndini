@@ -13,6 +13,7 @@
   //    After 2s the observer disconnects; if the video is looping it is also paused at that point.
   // 4. clickOverlayControls() tries known CSS selectors first, then falls back to a text search
   //    for any button whose label starts with "Skip" — so it survives YouTube class-name changes.
+  //    Playlist close buttons are also dismissed so the player returns to normal state.
 
   const MAX_PLAYBACK_RATE = 16.0;
   const OVERLAY_WATCH_MS = 2000;
@@ -20,7 +21,7 @@
   // These hosts block duration-seeking (DRM), so fast-forward instead
   const fastForwardHosts = [/hulu\.com/, /abcnews\.go\.com/];
 
-  // Known YouTube ad-skip button selectors — text-based fallback handles class renames
+  // Known skip-button selectors for YouTube — text-based fallback handles class renames
   const skipButtonSelector = '.videoAdUiEndButton, .ytp-ad-skip-button, .ytp-skip-ad-button, .ytp-ad-End-button, .ytp-ad-skip-button-modern';
   const playlistCloseSelector = '.ytp-playlist-menu-close';
   const skipTextPattern = /^skip/i;
@@ -37,9 +38,9 @@
   }
 
   // Tries known CSS selectors first for speed, then falls back to checking every
-  // button's text in case YouTube has renamed its classes. Returns null if no skip
-  // button is found. Intentionally duplicated in autoskip.js — no shared module
-  // exists between the two scripts since the extension has no build step.
+  // button's text in case YouTube has renamed its classes. Returns null if not found.
+  // Intentionally duplicated in autoskip-shared.js — no shared module exists between
+  // the two scripts since the extension has no build step.
   function findSkipButton() {
     const bySelector = document.querySelector(skipButtonSelector);
     if (bySelector) return bySelector;

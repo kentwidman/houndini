@@ -4,7 +4,7 @@
 // This file must be loaded first in the manifest so these are available
 // when the other two scripts execute.
 
-// Matches known YouTube ad-skip selectors; text fallback handles class renames
+// Known CSS selectors for YouTube skip buttons; text-based fallback handles class renames
 const skipButtonSelector = '.videoAdUiEndButton, .ytp-ad-skip-button, .ytp-skip-ad-button, .ytp-ad-End-button, .ytp-ad-skip-button-modern';
 const skipTextPattern = /^skip/i;
 
@@ -19,7 +19,7 @@ function findSkipButton() {
   return Array.from(candidates).find(el => skipTextPattern.test(el.textContent.trim())) || null;
 }
 
-// Shows a brief "Ad skipped" toast in the bottom-right corner, then fades it out.
+// Shows a brief notification in the bottom-right corner, then fades it out.
 function showToast() {
   const existing = document.getElementById('houndini-toast');
   if (existing) existing.remove();
@@ -44,7 +44,7 @@ function showToast() {
     pointerEvents: 'none',
     boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
   });
-  toast.textContent = 'Ad skipped';
+  toast.textContent = 'Content skipped';
   document.body.appendChild(toast);
 
   setTimeout(() => {

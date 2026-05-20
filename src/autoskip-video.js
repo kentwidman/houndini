@@ -1,51 +1,52 @@
 'use strict';
 
-// Video-level ad skip.
-// YouTube adds the class "ad-showing" to #movie_player for every ad. When that
-// class appears, the ad video is seeked to its duration to jump past it instantly.
-// A 500ms interval keeps re-seeking in case YouTube resets currentTime. The
-// interval is cleared as soon as "ad-showing" is removed from the player.
+// Video playback handler.
+// YouTube sets the "ad-showing" class on #movie_player when skippable content is
+// playing. When that class appears, the video is seeked to its duration to jump
+// past the segment instantly. A 500ms interval keeps re-seeking in case YouTube
+// resets currentTime. The interval is cleared once the player exits skippable mode.
 // Relies on showToast() from autoskip-shared.js.
 
-let adSeekInterval = null; // interval that keeps re-seeking while an ad is active
-let adToastShown = false;  // ensures the toast fires only once per ad
+let seekInterval = null;     // interval that keeps re-seeking while skippable content is playing
+let toastShown = false;      // ensures the toast fires only once per segment
 
-// YouTube adds "ad-showing" to #movie_player for every ad (pre-roll, mid-roll, etc.)
-function isAdShowing() {
+// Checks whether the player is currently in skippable playback mode.
+function isSkippableContent() {
   const player = document.getElementById('movie_player');
   return !!(player && player.classList.contains('ad-showing'));
 }
 
-// Seek the ad video to its end. Guards against duration not being ready yet (NaN / 0).
-// Shows the toast on the first successful seek so the user knows the skip happened.
-function seekPastAd() {
+// Seeks the video to its end. Guards against duration not being ready yet (NaN / 0).
+// Shows the notification on the first successful seek so the user knows it happened.
+function seekToEnd() {
   const video = document.querySelector('video.html5-main-video');
   if (!video || !isFinite(video.duration) || video.duration <= 0) return;
   video.currentTime = video.duration;
-  if (!adToastShown) {
+  if (!toastShown) {
     showToast();
-    adToastShown = true;
+    toastShown = true;
   }
 }
 
 // Called whenever #movie_player's class attribute changes.
-// Starts a 500ms seek interval when an ad begins, clears it when the ad ends.
-// The interval is needed because YouTube can reset currentTime mid-seek.
+// Starts a 500ms seek interval when the player enters skippable mode, and clears
+// it when the player returns to normal playback. The interval is necessary because
+// YouTube can reset currentTime during the seek.
 function onPlayerClassChange() {
-  if (isAdShowing()) {
-    if (!adSeekInterval) {
-      adToastShown = false;
-      seekPastAd();
-      adSeekInterval = setInterval(seekPastAd, 500);
+  if (isSkippableContent()) {
+    if (!seekInterval) {
+      toastShown = false;
+      seekToEnd();
+      seekInterval = setInterval(seekToEnd, 500);
     }
   } else {
-    clearInterval(adSeekInterval);
-    adSeekInterval = null;
-    adToastShown = false;
+    clearInterval(seekInterval);
+    seekInterval = null;
+    toastShown = false;
   }
 }
 
-// Watches #movie_player's class attribute for ad-showing changes.
+// Watches #movie_player's class attribute for playback state changes.
 // Retries every 500ms if the player element isn't in the DOM yet (e.g. on first page load).
 function attachPlayerObserver() {
   const player = document.getElementById('movie_player');
@@ -55,7 +56,7 @@ function attachPlayerObserver() {
   }
   new MutationObserver(onPlayerClassChange)
     .observe(player, { attributes: true, attributeFilter: ['class'] });
-  onPlayerClassChange(); // check immediately in case an ad is already playing
+  onPlayerClassChange(); // check immediately in case the player is already in skippable mode
 }
 
 attachPlayerObserver();

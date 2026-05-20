@@ -1,6 +1,6 @@
 'use strict';
 
-// Button-click ad skip.
+// Automatic skip-button handler.
 // A MutationObserver watches document.body for DOM changes. When a skip button
 // appears, it is clicked immediately. A WeakSet tracks already-clicked buttons
 // so the same element is never triggered twice. A 1.5s cooldown prevents
